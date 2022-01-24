@@ -8,6 +8,7 @@ Elaborado pela imersão React, proporcionado pela [Alura](https://www.alura.com.
 
 ## Projeto
 Clique [aqui](https://imersao-react-alura-phi.vercel.app/)
+![Projeto](/img/paginaInicial.png)
 
 ## Tecnologias utilizadas
 - Next.js
