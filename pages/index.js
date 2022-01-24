@@ -74,7 +74,8 @@ function Title(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-    const username = 'Lucas Souza';
+    //Pega a imagem e o nickname do GitHub
+    const username = 'dsslucas';
   
     return (
       <>
@@ -83,7 +84,7 @@ export default function PaginaInicial() {
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             backgroundColor: appConfig.theme.colors.primary[500],
-            backgroundImage: 'url()',
+            backgroundImage: 'url(https://i.imgur.com/oy5Y6p4.jpg)',
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
