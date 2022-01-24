@@ -16,6 +16,7 @@ Elaborado pela Alura
 - MaterialUI
 - Coolors
 - SkynexUI (bom para gerar icones e responsividade)
+- Publicação via Vercel (criadora do Next.js)
 
 
 ## Configuração inicial
