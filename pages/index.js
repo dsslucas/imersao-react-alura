@@ -3,41 +3,15 @@ import appConfig from '../config.json'
 
 //Skynex
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import React, { useEffect } from 'react';
 
-//Global Style
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-          background: 
-        }
+//Roteamento do Next
+import { useRouter } from 'next/router'
 
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-
-        #__next {
-          flex: 1;
-        }
-
-        #__next > * {
-          flex: 1;
-        }
-        
-        /* ./App fit Height */ 
-      `}</style>
-    );
+//Executa códigos para browser, independente do Next.js
+if (typeof window === 'object') {
+    //Alterações na imagem
+    var image = document.getElementById("imagem")
 }
 
 function Title(props) {
@@ -74,12 +48,25 @@ function Title(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-    //Pega a imagem e o nickname do GitHub
-    const username = 'dsslucas';
+    //Pega a imagem e o nickname do GitHub. É estado!
+    const [username, setUsername] = React.useState('dsslucas')
+
+    console.log("Quantidade de letras:", username.length)
+
+    //Roteamento
+    const roteamento = useRouter()
+
+    //Quando o estado é vazio
+    if (username.length <= 2) {
+        console.log("Entrei na condição de remover a imagem")
+        image.style.display = "none"
+    }
+    else{
+        image.style.display = "inline"
+    }
 
     return (
         <>
-            <GlobalStyle />
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -106,6 +93,12 @@ export default function PaginaInicial() {
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (e) {
+                            {/* Para evitar de recarregar o formulário, diferente do padrão */ }
+                            e.preventDefault()
+                            console.log("Alguém submeteu o form")
+                            roteamento.push('/chat')
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -116,7 +109,20 @@ export default function PaginaInicial() {
                             {appConfig.name}
                         </Text>
 
+                        {/*<input
+                            type="text"
+                            value={username}
+                            onChange={function (e) {
+                                console.log("Usuário digitou")
+                                setUsername(e.target.value)
+                            }} />
+                        */}
                         <TextField
+                            value={username}
+                            onChange={function (e) {
+                                console.log("Usuário digitou")
+                                setUsername(e.target.value)
+                            }}
                             fullWidth
                             textFieldColors={{
                                 neutral: {
@@ -159,6 +165,7 @@ export default function PaginaInicial() {
                         }}
                     >
                         <Image
+                            id="imagem"
                             styleSheet={{
                                 borderRadius: '50%',
                                 marginBottom: '16px',

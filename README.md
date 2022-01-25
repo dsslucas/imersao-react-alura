@@ -18,10 +18,13 @@ Clique [aqui](https://imersao-react-alura-phi.vercel.app/)
 ### Extensões e outros packages utilizados
 - Styled-jsx (para não dar conflito no CSS)
 - MaterialUI
-- Coolors
+- Coolors (para gerar paleta de cores)
 - SkynexUI (bom para gerar icones e responsividade)
 - Publicação via Vercel (criadora do Next.js)
 
 ## Configuração inicial
 - Clone o projeto com ```git clone```
 - Acesse o terminal e digite ```npm i``` para baixar todas as dependências de acordo com o package.json
+
+## Funcionalidades
+- Altera o nickname e foto com base nos dados do GitHub
