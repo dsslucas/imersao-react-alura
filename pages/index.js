@@ -8,11 +8,13 @@ import React, { useEffect } from 'react';
 //Roteamento do Next
 import { useRouter } from 'next/router'
 
+/*
 //Executa códigos para browser, independente do Next.js
 if (typeof window === 'object') {
-    //Alterações na imagem
-    var image = document.getElementById("imagem")
+    alert("Estou funcionando")
+
 }
+*/
 
 function Title(props) {
     //Tag. Pega o que vem da Props, caso contrário, usa h1
@@ -51,19 +53,19 @@ export default function PaginaInicial() {
     //Pega a imagem e o nickname do GitHub. É estado!
     const [username, setUsername] = React.useState('dsslucas')
 
-    console.log("Quantidade de letras:", username.length)
-
     //Roteamento
     const roteamento = useRouter()
+ 
+    // Informações que vem da API.
+    var url = `https://api.github.com/users/${username}`
 
-    //Quando o estado é vazio
-    if (username.length <= 2) {
-        console.log("Entrei na condição de remover a imagem")
-        image.style.display = "none"
-    }
-    else{
-        image.style.display = "inline"
-    }
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            var element = document.getElementById("nomePerfil")
+            element.innerText = data.name
+        })
+        .catch(error => console.log(error));
 
     return (
         <>
@@ -165,13 +167,15 @@ export default function PaginaInicial() {
                         }}
                     >
                         <Image
-                            id="imagem"
                             styleSheet={{
                                 borderRadius: '50%',
                                 marginBottom: '16px',
+                                display: (username.length <= 2) ? 'none' : 'flex'
                             }}
                             src={`https://github.com/${username}.png`}
                         />
+
+                        {/* Nome do perfil do GitHub */}
                         <Text
                             variant="body4"
                             styleSheet={{
@@ -180,7 +184,30 @@ export default function PaginaInicial() {
                                 padding: '3px 10px',
                                 borderRadius: '1000px'
                             }}
+
                         >
+                            <style jsx>{`
+                                p {
+                                    color: ${appConfig.theme.colors.neutrals['300']};
+                                    font-size: 12px;
+                                }
+                                `}
+                            </style>
+                            <p id="nomePerfil"></p>
+                        </Text>
+
+                        {/* Nickname do GitHub */}
+                        <Text
+                            variant="body5"
+                            styleSheet={{
+                                color: appConfig.theme.colors.neutrals[200],
+                                backgroundColor: appConfig.theme.colors.neutrals[900],
+                                padding: '3px 10px',
+                                borderRadius: '1000px'
+                            }}
+
+                        >
+
                             <style jsx>{`
                                 a {
                                     color: ${appConfig.theme.colors.neutrals['300']};
