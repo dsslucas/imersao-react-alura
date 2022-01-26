@@ -176,6 +176,12 @@ export default function ChatPage() {
                                 mainColorLight: appConfig.theme.colors.primary[400],
                                 mainColorStrong: appConfig.theme.colors.primary[600],
                             }}
+                            styleSheet={{
+
+                                hover: {
+                                    backgroundColor: 'green',
+                                }
+                            }}
                             onClick={e => {
                                 envioMensagem(e)
                                 suporteNovasMensagens(mensagem)
