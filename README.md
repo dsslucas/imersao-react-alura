@@ -21,6 +21,7 @@ Clique [aqui](https://imersao-react-alura-phi.vercel.app/)
 - Coolors (para gerar paleta de cores)
 - SkynexUI (bom para gerar icones e responsividade)
 - Publicação via Vercel (criadora do Next.js)
+- Font Awesome (icone da lixeira)
 
 ## Configuração inicial
 - Clone o projeto com ```git clone```
