@@ -4,6 +4,25 @@ import appConfig from '../config.json';
 
 export default function ChatPage() {
 
+    function Header() {
+        return (
+            <>
+                <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+                    <Text variant='heading5'>
+                        Chat
+                    </Text>
+                    <Button
+                        variant='tertiary'
+                        colorVariant='neutral'
+                        label='Logout'
+                        href="/"
+                    />
+                </Box>
+            </>
+        )
+    }
+
+
     //Campo de mensagem a ser digitada e enviada
     const [mensagem, setMensagem] = useState('')
 
@@ -54,8 +73,13 @@ export default function ChatPage() {
         setMensagem('')
     }
 
-    function deletaMensagem(){
-        console.log("Entrei na função")
+    //Deleta uma mensagem
+    function deletaMensagem(id){
+        //Filtra pelo ID, selecionando o elemento, isolando-o e criando um novo array
+        const apagarElementoLista = listaMensagem.filter(
+            (mensagem) => mensagem.id !== id
+        );
+        setListaMensagem(apagarElementoLista);
     }
 
     return (
@@ -97,7 +121,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listaMensagem}/>
+                    <MessageList mensagens={listaMensagem} />
                     {/*
                     Lista de mensagens: {listaMensagem.map((mensagemAtual) => {
                         return (
@@ -132,15 +156,12 @@ export default function ChatPage() {
                             value={mensagem}
                             onChange={e => {
                                 setMensagem(e.target.value)
-
                             }}
                             onKeyPress={e => {
-
                                 //Quando pressiona Enter
                                 if (e.key === 'Enter') {
                                     //Chama uma função
                                     envioMensagem(e)
-
                                     suporteNovasMensagens(mensagem)
                                 }
                             }}
@@ -165,112 +186,94 @@ export default function ChatPage() {
             </Box>
         </Box>
     )
-}
 
-function Header() {
-    return (
-        <>
-            <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
-                <Text variant='heading5'>
-                    Chat
-                </Text>
-                <Button
-                    variant='tertiary'
-                    colorVariant='neutral'
-                    label='Logout'
-                    href="/"
-                />
-            </Box>
-        </>
-    )
-}
-
-function MessageList(props, deleta) {
-    console.log(props)
-    return (
-        <Box
-            tag="ul"
-            styleSheet={{
-                overflow: 'auto',
-                display: 'flex',
-                flexDirection: 'column-reverse',
-                flex: 1,
-                color: appConfig.theme.colors.neutrals["000"],
-                marginBottom: '16px',
-            }}
-        >
-            {props.mensagens.map((mensagem) => {
-                return (
-                    <Text
-                        key={mensagem.id}
-                        tag="li"
-                        styleSheet={{
-                            borderRadius: '5px',
-                            padding: '6px',
-                            marginBottom: '12px',
-                            hover: {
-                                backgroundColor: appConfig.theme.colors.neutrals[700],
-                            }
-                        }}
-                    >
-                        <Box
+    function MessageList(props) {
+        console.log(props)      
+    
+        return (
+            <Box
+                tag="ul"
+                styleSheet={{
+                    overflow: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column-reverse',
+                    flex: 1,
+                    color: appConfig.theme.colors.neutrals["000"],
+                    marginBottom: '16px',
+                }}
+            >
+                {props.mensagens.map((mensagem) => {
+                    return (
+                        <Text
+                            key={mensagem.id}
+                            tag="li"
                             styleSheet={{
-                                marginBottom: '8px',
-                                display: 'flex',
-                                alignItems: 'center'
+                                borderRadius: '5px',
+                                padding: '6px',
+                                marginBottom: '12px',
+                                hover: {
+                                    backgroundColor: appConfig.theme.colors.neutrals[700],
+                                }
                             }}
                         >
-                            <Image
+                            <Box
                                 styleSheet={{
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '50%',
-                                    display: 'inline-block',
-                                    marginRight: '8px',
-                                }}
-                                src={`https://github.com/dsslucas.png`}
-                            />
-
-                            <Text tag="strong">
-                                {mensagem.de}
-                            </Text>
-
-
-                            <Text
-                                styleSheet={{
-                                    fontSize: '10px',
-                                    marginLeft: '8px',
-                                    color: appConfig.theme.colors.neutrals[300],
-                                }}
-                                tag="span"
-                            >
-                                {(new Date().toLocaleDateString())}
-                            </Text>
-
-                            <Icon name={"FaTrash"}
-                                styleSheet={{
-                                    marginLeft: '15px',
-                                    width: '15px',
-                                    height: '15px',
-
-                                    color: appConfig.theme.colors.primary['000'],
-                                    hover: {
-                                        color: 'red',
-                                    },
+                                    marginBottom: '8px',
                                     display: 'flex',
                                     alignItems: 'center'
                                 }}
-                                onClick={() => deletaMensagem()}
-                            />
-                        </Box>
-
-                        {mensagem.texto}
-                    </Text>
-                )
-            })}
-            {/*key={mensagem.id}*/}
-
-
-        </Box>
-    )
+                            >
+                                <Image
+                                    styleSheet={{
+                                        width: '20px',
+                                        height: '20px',
+                                        borderRadius: '50%',
+                                        display: 'inline-block',
+                                        marginRight: '8px',
+                                    }}
+                                    src={`https://github.com/dsslucas.png`}
+                                />
+    
+                                <Text tag="strong">
+                                    {mensagem.de}
+                                </Text>
+    
+    
+                                <Text
+                                    styleSheet={{
+                                        fontSize: '10px',
+                                        marginLeft: '8px',
+                                        color: appConfig.theme.colors.neutrals[300],
+                                    }}
+                                    tag="span"
+                                >
+                                    {(new Date().toLocaleDateString())}
+                                </Text>
+    
+                                <Icon name={"FaTrash"}
+                                    styleSheet={{
+                                        marginLeft: '15px',
+                                        width: '15px',
+                                        height: '15px',
+    
+                                        color: appConfig.theme.colors.primary['000'],
+                                        hover: {
+                                            color: 'red',
+                                        },
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        deletaMensagem(mensagem.id)}}
+                                />
+                            </Box>
+    
+                            {mensagem.texto}
+                        </Text>
+                    )
+                })}
+            </Box>
+        )
+    }
 }
