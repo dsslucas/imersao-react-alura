@@ -1,8 +1,117 @@
 import { Box, Text, TextField, Image, Button, Icon } from '@skynexui/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
 
-export default function ChatPage() {
+//Lida com variável de ambiente. Aqui acessa o backend
+export async function getServerSideProps(context) {
+    //Conexão com o SupaBase
+    const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+
+    const SUPABASE_URL = process.env.SUPABASE_URL
+
+    return {
+        props: {
+            SUPABASE_ANON_KEY,
+            SUPABASE_URL
+        },
+    }
+}
+
+export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
+
+    //Campo de mensagem a ser digitada e enviada
+    const [mensagem, setMensagem] = useState('')
+
+    //Lista de mensagens
+    const [listaMensagem, setListaMensagem] = useState([])
+
+    // Create a single supabase client for interacting with your database
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+    /*
+        // Usuário
+        - Usuário digita no campo textarea
+        - Aperta enter para enviar
+        - Tem que adicionar o texto na listagem
+        
+        // Dev
+        - [X] Campo criado
+        - [ ] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variavel)
+        - [ ] Lista de mensagens 
+    */
+
+    //Hook do React para alteração APENAS quando ocorrer um efeito
+    useEffect(() => {
+        supabaseClient
+            .from('mensagens')
+            .select('*')
+            //Ordena por ID crescente
+            .order('id', { ascending: false })
+            /* Ctrl + SPACE para apontar direto com o elemento, diferente de dados.data */
+            .then(({ data }) => {
+                console.log('Dados da consulta:', data)
+                setListaMensagem(data)
+            })
+    }, [])
+
+    //Pega a tabela e seleciona TUDO
+
+
+    //Novas mensagens enviadas, com chamada no onKeyPress
+    function suporteNovasMensagens(novaMensagem) {
+
+        //A partir daqui, o estado que era string se torna um objeto
+        const mensagem = {
+            //id
+            //id: listaMensagem.length + 1,
+
+            //Quem está enviando a mensagem
+            de: 'xxmattewxx',
+
+            texto: novaMensagem
+
+        }
+
+        //Realiza o POST no Supabase
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                mensagem
+            ])
+            .then(({ data }) => {
+                console.log("Criando mensagem:", data)
+                setListaMensagem([
+                    //Pega tudo da lista já criada
+                    data[0],
+                    ...listaMensagem
+                ])
+            })
+
+        /*
+        //A lista não altera, apenas inclui no estado já vigente.
+        
+        */
+        setMensagem('')
+    }
+
+    //Envia a mensagem. Funciona para botão e tecla enter.
+    function envioMensagem(e) {
+        //Quebra o padrão do enter pular linha
+        e.preventDefault()
+
+        //Limpa o estado da mensagem
+        setMensagem('')
+    }
+
+    //Deleta uma mensagem
+    function deletaMensagem(id) {
+        //Filtra pelo ID, selecionando o elemento, isolando-o e criando um novo array
+        const apagarElementoLista = listaMensagem.filter(
+            (mensagem) => mensagem.id !== id
+        );
+        setListaMensagem(apagarElementoLista);
+    }
 
     function Header() {
         return (
@@ -20,66 +129,6 @@ export default function ChatPage() {
                 </Box>
             </>
         )
-    }
-
-
-    //Campo de mensagem a ser digitada e enviada
-    const [mensagem, setMensagem] = useState('')
-
-    //Lista de mensagens
-    const [listaMensagem, setListaMensagem] = useState([])
-
-    /*
-        // Usuário
-        - Usuário digita no campo textarea
-        - Aperta enter para enviar
-        - Tem que adicionar o texto na listagem
-        
-        // Dev
-        - [X] Campo criado
-        - [ ] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variavel)
-        - [ ] Lista de mensagens 
-    */
-
-    //Novas mensagens enviadas, com chamada no onKeyPress
-    function suporteNovasMensagens(novaMensagem) {
-
-        //A partir daqui, o estado que era string se torna um objeto
-        const mensagem = {
-            //id
-            id: listaMensagem.length + 1,
-
-            //Quem está enviando a mensagem
-            de: 'dsslucas',
-
-            texto: novaMensagem
-
-        }
-        //A lista não altera, apenas inclui no estado já vigente.
-        setListaMensagem([
-            //Pega tudo da lista já criada
-            mensagem,
-            ...listaMensagem
-        ])
-        setMensagem('')
-    }
-
-    //Envia a mensagem. Funciona para botão e tecla enter.
-    function envioMensagem(e) {
-        //Quebra o padrão do enter pular linha
-        e.preventDefault()
-
-        //Limpa o estado da mensagem
-        setMensagem('')
-    }
-
-    //Deleta uma mensagem
-    function deletaMensagem(id){
-        //Filtra pelo ID, selecionando o elemento, isolando-o e criando um novo array
-        const apagarElementoLista = listaMensagem.filter(
-            (mensagem) => mensagem.id !== id
-        );
-        setListaMensagem(apagarElementoLista);
     }
 
     return (
@@ -121,7 +170,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listaMensagem} />
+                    <MessageList mensagens={listaMensagem}/>
                     {/*
                     Lista de mensagens: {listaMensagem.map((mensagemAtual) => {
                         return (
@@ -194,8 +243,8 @@ export default function ChatPage() {
     )
 
     function MessageList(props) {
-        console.log(props)      
-    
+        console.log(props)
+
         return (
             <Box
                 tag="ul"
@@ -237,14 +286,14 @@ export default function ChatPage() {
                                         display: 'inline-block',
                                         marginRight: '8px',
                                     }}
-                                    src={`https://github.com/dsslucas.png`}
+                                    src={`https://github.com/${mensagem.de}.png`}
                                 />
-    
+
                                 <Text tag="strong">
                                     {mensagem.de}
                                 </Text>
-    
-    
+
+
                                 <Text
                                     styleSheet={{
                                         fontSize: '10px',
@@ -255,13 +304,13 @@ export default function ChatPage() {
                                 >
                                     {(new Date().toLocaleDateString())}
                                 </Text>
-    
+
                                 <Icon name={"FaTrash"}
                                     styleSheet={{
                                         marginLeft: '15px',
                                         width: '15px',
                                         height: '15px',
-    
+
                                         color: appConfig.theme.colors.primary['000'],
                                         hover: {
                                             color: 'red',
@@ -271,10 +320,11 @@ export default function ChatPage() {
                                     }}
                                     onClick={e => {
                                         e.preventDefault();
-                                        deletaMensagem(mensagem.id)}}
+                                        deletaMensagem(mensagem.id)
+                                    }}
                                 />
                             </Box>
-    
+
                             {mensagem.texto}
                         </Text>
                     )
