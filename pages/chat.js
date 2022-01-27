@@ -285,6 +285,11 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                                         borderRadius: '50%',
                                         display: 'inline-block',
                                         marginRight: '8px',
+                                        hover: {
+                                            transform: 'scale(3.5)',
+                                            marginLeft: '25px',
+                                            marginRight: '35px'
+                                        }
                                     }}
                                     src={`https://github.com/${mensagem.de}.png`}
                                 />
