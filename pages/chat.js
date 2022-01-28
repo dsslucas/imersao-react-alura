@@ -334,15 +334,17 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                             >
                                 <Image
                                     styleSheet={{
-                                        width: '20px',
-                                        height: '20px',
+                                        width: '30px',
+                                        height: '30px',
                                         borderRadius: '50%',
                                         display: 'inline-block',
                                         marginRight: '8px',
                                         hover: {
                                             transform: 'scale(3.5)',
-                                            marginLeft: '25px',
-                                            marginRight: '35px'
+                                            marginLeft: '45px',
+                                            marginRight: '50px',
+                                            marginBottom: '35px',
+                                            marginTop: '45px'
                                         }
                                     }}
                                     src={`https://github.com/${mensagem.de}.png`}
