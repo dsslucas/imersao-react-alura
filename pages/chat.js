@@ -52,24 +52,28 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                 setListaMensagem(data)
             })
 
-        
-        const subscription = mensagensRealTime((novaMensagem) => {
-            console.log('Nova mensagem:', novaMensagem);
-            console.log('listaDeMensagens:', listaMensagem);
+        mensagensRealTime((novaMensagem) => {
+            if (novaMensagem.eventType == 'INSERT') {
+                setListaMensagem((valorAtualDaLista) => {
+                    return [
+                        novaMensagem.new,
+                        ...valorAtualDaLista,
+                    ]
+                }
+                );
+            }
 
-            setListaMensagem((valorAtualDaLista) => {
-                console.log('valorAtualDaLista:', valorAtualDaLista);
-                //Sempre que tiver uma mensagem nova, ela lança
-                return [
-                    novaMensagem,
-                    ...valorAtualDaLista,
-                ]
-            })
-        })  
+            if (novaMensagem.eventType == 'DELETE') {
+                setListaMensagem((valorAtualDaLista) => {
+                    const lista = valorAtualDaLista.filter((mensagem) => { if (mensagem.id != novaMensagem.old.id) return mensagem })
+                    return [
+                        ...lista,
+                    ]
+                }
+                );
+            }
 
-        return () => {
-            subscription.unsubscribe();
-          }
+        })
     }, [])
 
     //Pega a tabela e seleciona TUDO
@@ -109,12 +113,21 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
 
     //Propriedade do Supabase que atualiza automaticamente as mensagens enviadas, meio que um timer
     function mensagensRealTime(adicionaMensagem) {
+        /*
         return supabaseClient
             .from('mensagens')
             .on('INSERT', (respostaSupabase) => {
                 adicionaMensagem(respostaSupabase.new)
             })
             .subscribe();
+        */
+
+        return supabaseClient
+            .from('mensagens')
+            .on('*', (respostaLive) => {
+                adicionaMensagem(respostaLive)
+            })
+            .subscribe()
     }
 
     //Envia a mensagem. Funciona para botão e tecla enter.
@@ -132,6 +145,16 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
         const apagarElementoLista = listaMensagem.filter(
             (mensagem) => mensagem.id !== id
         );
+
+
+        //Deleta do banco de dados
+        const { data } = supabaseClient
+            .from('mensagens')
+            .delete()
+            .match({ id })
+            .then({ data })
+
+
         setListaMensagem(apagarElementoLista);
     }
 
@@ -325,7 +348,13 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                                     src={`https://github.com/${mensagem.de}.png`}
                                 />
 
-                                <Text tag="strong">
+                                <Text 
+                                    tag="a"
+                                    href={`https://github.com/${mensagem.de}`}
+                                    target={"_blank"}
+                                    styleSheet={{
+                                        color: appConfig.theme.colors.neutrals['200']
+                                    }}>
                                     {mensagem.de}
                                 </Text>
 
