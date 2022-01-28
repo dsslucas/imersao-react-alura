@@ -2,6 +2,10 @@ import { Box, Text, TextField, Image, Button, Icon } from '@skynexui/components'
 import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/router';
+
+//Import do botão
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
 //Lida com variável de ambiente. Aqui acessa o backend
 export async function getServerSideProps(context) {
@@ -18,7 +22,13 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
+export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
+
+    //Roteamento
+    const roteamento = useRouter()
+
+    //Acesso ao usuário logado, informado pela URL
+    const usuariologado = roteamento.query.username
 
     //Campo de mensagem a ser digitada e enviada
     const [mensagem, setMensagem] = useState('')
@@ -28,18 +38,6 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
 
     // Create a single supabase client for interacting with your database
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-    /*
-        // Usuário
-        - Usuário digita no campo textarea
-        - Aperta enter para enviar
-        - Tem que adicionar o texto na listagem
-        
-        // Dev
-        - [X] Campo criado
-        - [ ] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variavel)
-        - [ ] Lista de mensagens 
-    */
 
     //Hook do React para alteração APENAS quando ocorrer um efeito
     useEffect(() => {
@@ -53,6 +51,25 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                 console.log('Dados da consulta:', data)
                 setListaMensagem(data)
             })
+
+        
+        const subscription = mensagensRealTime((novaMensagem) => {
+            console.log('Nova mensagem:', novaMensagem);
+            console.log('listaDeMensagens:', listaMensagem);
+
+            setListaMensagem((valorAtualDaLista) => {
+                console.log('valorAtualDaLista:', valorAtualDaLista);
+                //Sempre que tiver uma mensagem nova, ela lança
+                return [
+                    novaMensagem,
+                    ...valorAtualDaLista,
+                ]
+            })
+        })  
+
+        return () => {
+            subscription.unsubscribe();
+          }
     }, [])
 
     //Pega a tabela e seleciona TUDO
@@ -63,14 +80,10 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
 
         //A partir daqui, o estado que era string se torna um objeto
         const mensagem = {
-            //id
-            //id: listaMensagem.length + 1,
-
             //Quem está enviando a mensagem
-            de: 'xxmattewxx',
+            de: usuariologado,
 
             texto: novaMensagem
-
         }
 
         //Realiza o POST no Supabase
@@ -79,20 +92,29 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
             .insert([
                 mensagem
             ])
+
+            //Dispara o cadastro
             .then(({ data }) => {
                 console.log("Criando mensagem:", data)
-                setListaMensagem([
-                    //Pega tudo da lista já criada
-                    data[0],
-                    ...listaMensagem
-                ])
             })
+
 
         /*
         //A lista não altera, apenas inclui no estado já vigente.
         
         */
         setMensagem('')
+    }
+
+
+    //Propriedade do Supabase que atualiza automaticamente as mensagens enviadas, meio que um timer
+    function mensagensRealTime(adicionaMensagem) {
+        return supabaseClient
+            .from('mensagens')
+            .on('INSERT', (respostaSupabase) => {
+                adicionaMensagem(respostaSupabase.new)
+            })
+            .subscribe();
     }
 
     //Envia a mensagem. Funciona para botão e tecla enter.
@@ -170,7 +192,7 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                     }}
                 >
 
-                    <MessageList mensagens={listaMensagem}/>
+                    <MessageList mensagens={listaMensagem} />
                     {/*
                     Lista de mensagens: {listaMensagem.map((mensagemAtual) => {
                         return (
@@ -216,6 +238,15 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                             }}
                         />
 
+                        {/* Função Callback! Chamada de retorno */}
+                        <ButtonSendSticker
+                            onStickerClick={(sticker) => {
+                                //console.log("Salva esse sticker no banco", sticker)
+                                suporteNovasMensagens(`:sticker:${sticker}`)
+                            }}
+
+                        />
+
                         <Button
                             type='submit'
                             label='Enviar'
@@ -226,7 +257,7 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                                 mainColorStrong: appConfig.theme.colors.primary[600],
                             }}
                             styleSheet={{
-
+                                marginLeft: '10px',
                                 hover: {
                                     backgroundColor: 'green',
                                 }
@@ -243,7 +274,7 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
     )
 
     function MessageList(props) {
-        console.log(props)
+        //console.log(props)
 
         return (
             <Box
@@ -330,7 +361,18 @@ export default function ChatPage({SUPABASE_ANON_KEY, SUPABASE_URL}) {
                                 />
                             </Box>
 
-                            {mensagem.texto}
+                            {/*Condicional: {mensagem.texto.startsWith(':sticker:').toString()}*/}
+                            {mensagem.texto.startsWith(':sticker:') ? (
+                                //Deleta o sticker da string
+                                <Image
+                                    src={mensagem.texto.replace(':sticker:', '')}
+                                    styleSheet={{
+                                        width: '200px'
+                                    }}
+                                />
+                            ) : (
+                                mensagem.texto
+                            )}
                         </Text>
                     )
                 })}

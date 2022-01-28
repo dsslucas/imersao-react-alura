@@ -35,23 +35,9 @@ function Title(props) {
     )
 }
 
-// //Componente React
-// function HomePage() {
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Title tag="h2">Seja bem vindo!</Title>
-//             <h2>Discord - Simulado</h2>
-
-
-//         </div>
-//     )
-// }
-// export default HomePage
-
 export default function PaginaInicial() {
     //Pega a imagem e o nickname do GitHub. É estado!
-    const [username, setUsername] = React.useState('dsslucas')
+    const [username, setUsername] = React.useState('')
 
     //Roteamento
     const roteamento = useRouter()
@@ -87,9 +73,9 @@ export default function PaginaInicial() {
                             sm: 'row',
                         },
                         width: '100%', maxWidth: '700px',
-                        borderRadius: '5px', padding: '32px', margin: '16px',
+                        borderRadius: '8px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        backgroundColor: appConfig.theme.colors.neutrals[700]
                     }}
                 >
                     {/* Formulário */}
@@ -99,7 +85,9 @@ export default function PaginaInicial() {
                             {/* Para evitar de recarregar o formulário, diferente do padrão */ }
                             e.preventDefault()
                             console.log("Alguém submeteu o form")
-                            roteamento.push('/chat')
+
+                            //Passa pro chat passando o username definido
+                            roteamento.push(`/chat?username=${username}`)
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
