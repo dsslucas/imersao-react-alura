@@ -189,7 +189,8 @@ export default function PaginaInicial() {
                                 color: appConfig.theme.colors.neutrals[200],
                                 backgroundColor: appConfig.theme.colors.neutrals[900],
                                 padding: '3px 10px',
-                                borderRadius: '1000px'
+                                borderRadius: '1000px',
+                                display: (checkNickname) ? 'flex' : 'none'
                             }}
                         >
                             {checkNickname ? name : ''}
@@ -207,7 +208,8 @@ export default function PaginaInicial() {
                                 padding: '3px 10px',
                                 marginTop: '5px',
                                 borderRadius: '1000px',
-                                fontSize: '12px'
+                                fontSize: '12px',
+                                display: (checkNickname) ? 'flex' : 'none'
                             }}
                         >
                             {checkNickname? username : ''}
