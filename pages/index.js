@@ -107,7 +107,7 @@ export default function PaginaInicial() {
                                 roteamento.push(`/chat?username=${username}&name=${name}`)
                             }
 
-                            else{
+                            else {
                                 alert("Usuário não reconhecido pela plataforma! Por gentileza, informe o nickname correto.")
                             }
 
@@ -148,6 +148,17 @@ export default function PaginaInicial() {
                                 mainColorStrong: appConfig.theme.colors.primary[600],
                             }}
                         />
+
+                        <Text
+                            variant="body3"
+                            styleSheet={{
+                                marginTop: '32px',
+                                color: appConfig.theme.colors.neutrals[300]
+                            }}
+                        >
+                            Aviso: dados consumidos da API do GitHub, que possui limite para consultas. Caso falhe, retorne mais tarde.
+                        </Text>
+
                     </Box>
                     {/* Formulário */}
 
@@ -207,7 +218,7 @@ export default function PaginaInicial() {
                                 display: (checkNickname) ? 'flex' : 'none'
                             }}
                         >
-                            {checkNickname? username : ''}
+                            {checkNickname ? username : ''}
                         </Text>
                     </Box>
                     {/* Photo Area */}
