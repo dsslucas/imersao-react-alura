@@ -119,11 +119,12 @@ export default function PaginaInicial() {
                     >
                         <Title tag="h2">Boas vindas!</Title>
                         <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
-                            Informe seu usuário do GitHub para entrar no chat
+                            
                         </Text>
 
                         <TextField
                             value={username}
+                            placeholder='Informe o seu nickname do GitHub'
                             onChange={function (e) {
                                 setUsername(e.target.value)
                             }}
@@ -227,4 +228,3 @@ export default function PaginaInicial() {
         </>
     );
 }
-
