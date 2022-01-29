@@ -19,13 +19,16 @@ Clique [aqui](https://imersao-react-alura-phi.vercel.app/)
 - Styled-jsx (para não dar conflito no CSS)
 - MaterialUI
 - Coolors (para gerar paleta de cores)
-- SkynexUI (bom para gerar icones e responsividade)
+- SkynexUI (PARA gerar icones e responsividade)
 - Publicação via Vercel (criadora do Next.js)
 - Font Awesome (icone da lixeira)
+- Supabase (banco de dados)
 
 ## Configuração inicial
 - Clone o projeto com ```git clone```
 - Acesse o terminal e digite ```npm i``` para baixar todas as dependências de acordo com o package.json
 
 ## Funcionalidades
-- Altera o nickname e foto com base nos dados do GitHub
+- Exibe o nickname e foto com base nos dados do GitHub
+- Envia e deleta mensagens
+- Apenas entra no chat quem tiver usuário válido no GitHub

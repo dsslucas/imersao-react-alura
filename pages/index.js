@@ -3,7 +3,7 @@ import appConfig from '../config.json'
 
 //Skynex
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //Roteamento do Next
 import { useRouter } from 'next/router'
@@ -39,17 +39,36 @@ export default function PaginaInicial() {
     //Pega a imagem e o nickname do GitHub. É estado!
     const [username, setUsername] = React.useState('')
 
+    //Nickname
+    const [checkNickname, setCheckNickname] = useState(false)
+
+    //Nome do usuário no GitHub
+    const [name, setName] = useState('')
+
     //Roteamento
     const roteamento = useRouter()
- 
+
     // Informações que vem da API.
     var url = `https://api.github.com/users/${username}`
 
-    fetch(url)
+
+    const valoresApi = fetch(url)
         .then(response => response.json())
         .then(data => {
-            var element = document.getElementById("nomePerfil")
-            element.innerText = data.name
+            //var element = document.getElementById("nomePerfil")
+            //element.innerText = data.name
+
+            console.log("NOME INFORMADO PELA API:", data.name)
+
+            //Checa o login, se é válido ou não. Importante para autenticação no form.
+            if (data.login) {
+                setCheckNickname(true)
+                setName(data.name)
+            }
+            else {
+                setCheckNickname(false)
+                setName('')
+            }
         })
         .catch(error => console.log(error));
 
@@ -86,8 +105,16 @@ export default function PaginaInicial() {
                             e.preventDefault()
                             console.log("Alguém submeteu o form")
 
-                            //Passa pro chat passando o username definido
-                            roteamento.push(`/chat?username=${username}`)
+                            if (checkNickname === true) {
+                                console.log("Entrei na condição de autenticação")
+                                //Passa pro chat passando o username definido
+                                roteamento.push(`/chat?username=${username}`)
+                            }
+
+                            else{
+                                alert("Usuário não reconhecido pela plataforma! Por gentileza, informe o nickname correto.")
+                            }
+
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -96,7 +123,7 @@ export default function PaginaInicial() {
                     >
                         <Title tag="h2">Boas vindas de volta!</Title>
                         <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
-                            {appConfig.name}
+                            Informe seu usuário do GitHub para entrar no chat
                         </Text>
 
                         {/*<input
@@ -158,9 +185,9 @@ export default function PaginaInicial() {
                             styleSheet={{
                                 borderRadius: '50%',
                                 marginBottom: '16px',
-                                display: (username.length <= 2) ? 'none' : 'flex'
+                                display: (checkNickname) ? 'flex' : 'none'
                             }}
-                            src={`https://github.com/${username}.png`}
+                            src={checkNickname ? `https://github.com/${username}.png` : ''}
                         />
 
                         {/* Nome do perfil do GitHub */}
@@ -172,38 +199,26 @@ export default function PaginaInicial() {
                                 padding: '3px 10px',
                                 borderRadius: '1000px'
                             }}
-
                         >
-                            <style jsx>{`
-                                p {
-                                    color: ${appConfig.theme.colors.neutrals['300']};
-                                    font-size: 12px;
-                                }
-                                `}
-                            </style>
-                            <p id="nomePerfil"></p>
+                            {checkNickname ? name : ''}
                         </Text>
 
                         {/* Nickname do GitHub */}
                         <Text
                             variant="body5"
+                            tag="a"
+                            target="_blank"
+                            href={`https://github.com/${username}`}
                             styleSheet={{
                                 color: appConfig.theme.colors.neutrals[200],
                                 backgroundColor: appConfig.theme.colors.neutrals[900],
                                 padding: '3px 10px',
-                                borderRadius: '1000px'
+                                marginTop: '5px',
+                                borderRadius: '1000px',
+                                fontSize: '12px'
                             }}
-
                         >
-
-                            <style jsx>{`
-                                a {
-                                    color: ${appConfig.theme.colors.neutrals['300']};
-                                    font-size: 12px;
-                                }
-                                `}
-                            </style>
-                            <a href={`https://github.com/${username}`} target="_blank">{username}</a>
+                            {checkNickname? username : ''}
                         </Text>
                     </Box>
                     {/* Photo Area */}
