@@ -58,8 +58,6 @@ export default function PaginaInicial() {
             //var element = document.getElementById("nomePerfil")
             //element.innerText = data.name
 
-            console.log("NOME INFORMADO PELA API:", data.name)
-
             //Checa o login, se é válido ou não. Importante para autenticação no form.
             if (data.login) {
                 setCheckNickname(true)
@@ -103,10 +101,8 @@ export default function PaginaInicial() {
                         onSubmit={function (e) {
                             {/* Para evitar de recarregar o formulário, diferente do padrão */ }
                             e.preventDefault()
-                            console.log("Alguém submeteu o form")
 
                             if (checkNickname === true) {
-                                console.log("Entrei na condição de autenticação")
                                 //Passa pro chat passando o username definido
                                 roteamento.push(`/chat?username=${username}&name=${name}`)
                             }
@@ -129,7 +125,6 @@ export default function PaginaInicial() {
                         <TextField
                             value={username}
                             onChange={function (e) {
-                                console.log("Usuário digitou")
                                 setUsername(e.target.value)
                             }}
                             fullWidth

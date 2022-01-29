@@ -51,7 +51,6 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
             .order('id', { ascending: false })
             /* Ctrl + SPACE para apontar direto com o elemento, diferente de dados.data */
             .then(({ data }) => {
-                console.log('Dados da consulta:', data)
                 setListaMensagem(data)
             })
 
@@ -102,7 +101,6 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
 
             //Dispara o cadastro
             .then(({ data }) => {
-                console.log("Criando mensagem:", data)
             })
 
 
@@ -302,7 +300,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                         {/* Função Callback! Chamada de retorno */}
                         <ButtonSendSticker
                             onStickerClick={(sticker) => {
-                                //console.log("Salva esse sticker no banco", sticker)
+
                                 suporteNovasMensagens(`:sticker:${sticker}`)
                             }}
 
@@ -335,7 +333,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
     )
 
     function MessageList(props) {
-        //console.log(props)
+
 
         return (
             <Box
