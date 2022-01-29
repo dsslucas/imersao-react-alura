@@ -30,6 +30,9 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
     //Acesso ao usuário logado, informado pela URL
     const usuariologado = roteamento.query.username
 
+    //Nome do usuário, informado pela URL
+    const nomeUsuarioLogado = roteamento.query.name
+
     //Campo de mensagem a ser digitada e enviada
     const [mensagem, setMensagem] = useState('')
 
@@ -165,6 +168,41 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                     <Text variant='heading5'>
                         Chat
                     </Text>
+
+                    <Box
+                        styleSheet={{
+                            display: 'flex'
+                        }}
+                    >
+                        <Image
+                            styleSheet={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '50%',
+                                display: 'inline-block',
+                                marginRight: '8px',
+                                hover: {
+                                    transform: 'scale(3.5)',
+                                    marginLeft: '45px',
+                                    marginRight: '50px',
+                                    marginBottom: '35px',
+                                    marginTop: '45px'
+                                }
+                            }}
+                            src={`https://github.com/${usuariologado}.png`}
+                        />
+
+                        <Text
+                            styleSheet={{
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            {nomeUsuarioLogado}
+                        </Text>
+                    </Box>
+
+
                     <Button
                         variant='tertiary'
                         colorVariant='neutral'
@@ -350,7 +388,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                                     src={`https://github.com/${mensagem.de}.png`}
                                 />
 
-                                <Text 
+                                <Text
                                     tag="a"
                                     href={`https://github.com/${mensagem.de}`}
                                     target={"_blank"}

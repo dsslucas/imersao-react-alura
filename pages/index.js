@@ -108,7 +108,7 @@ export default function PaginaInicial() {
                             if (checkNickname === true) {
                                 console.log("Entrei na condição de autenticação")
                                 //Passa pro chat passando o username definido
-                                roteamento.push(`/chat?username=${username}`)
+                                roteamento.push(`/chat?username=${username}&name=${name}`)
                             }
 
                             else{
@@ -121,19 +121,11 @@ export default function PaginaInicial() {
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
                         }}
                     >
-                        <Title tag="h2">Boas vindas de volta!</Title>
+                        <Title tag="h2">Boas vindas!</Title>
                         <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                             Informe seu usuário do GitHub para entrar no chat
                         </Text>
 
-                        {/*<input
-                            type="text"
-                            value={username}
-                            onChange={function (e) {
-                                console.log("Usuário digitou")
-                                setUsername(e.target.value)
-                            }} />
-                        */}
                         <TextField
                             value={username}
                             onChange={function (e) {
