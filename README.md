@@ -8,7 +8,7 @@ Elaborado pela imersão React, proporcionado pela [Alura](https://www.alura.com.
 
 ## Projeto 🖱️
 Clique [aqui](https://imersao-react-alura-phi.vercel.app/)
-![Página inicial](/img/paginaInicial.png)
+![Pagina inicial](/img/paginaInicial.png)
 ![Chat](/img/paginaChat.png)
 
 ## Tecnologias utilizadas 💻
